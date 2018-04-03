@@ -13,7 +13,7 @@ file_path_2 = "../file/EmergingMarket.xlsx"
 #文件中包含的表单列表
 index_list_dict = {
     "index_list_1" : [
-        "NDX INDEX",
+        #"NDX INDEX",
         "SPX INDEX",
         "DJI INDEX",
         "SX5E INDEX",
@@ -47,7 +47,7 @@ index_list_dict = {
 
 #需要处理的字段
 index_fields = [
-    "BEst NI:2016C\n",
+    "NI / Profit:2016C\n",
     "BEst NI:2017C\n",
     "BEst NI:2018C\n",
     "Market Cap:D-1\n",
@@ -55,7 +55,7 @@ index_fields = [
 
 #结果字段
 result_fields = [
-    "BEst NI:2016C\n",
+    "NI / Profit:2016C\n",
     "BEst NI:2017C\n",
     "BEst NI:2018C\n",
     "Market Cap:D-1\n",
@@ -79,7 +79,7 @@ def bloombergParser(file_path):
             if field in index_fields:
                 print field
                 print parser[field].sum()
-                result[field][index_name] = parser[field].sum()
+                result[field][index_name] = parser[field].sum() / 100000000
     # print result
     writer = pd.ExcelWriter('output.xlsx')
     result.to_excel(writer,'Sheet2')
@@ -93,7 +93,10 @@ def dataClean(parser):
     for field in index_fields:
         for index_num in parser[field].index:
             if parser[field][index_num] == u'--':
+                print index_num
+                print parser[field][index_num]
                 parser = parser.drop(index_num, axis = 0)
+    print parser.shape[0]
     empty_num = ini_num - parser.shape[0]
     return [parser, empty_num]
 
